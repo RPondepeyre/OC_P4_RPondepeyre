@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.TimeUnit;
@@ -77,6 +78,16 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         TimeUnit.SECONDS.sleep(1);
         parkingService.processExitingVehicle();
+            try{
+                Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+                assert(ticket.getOutTime() != null);
+                // TODO assert price
+
+            }
+            catch(Exception e){
+                e.printStackTrace();
+            }
+        
         //TODO: check that the fare generated and out time are populated correctly in the database
     }
 
