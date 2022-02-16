@@ -2,6 +2,7 @@ package com.parkit.parkingsystem.dao;
 
 import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.DBConstants;
+import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
@@ -60,6 +61,7 @@ public class TicketDAO {
                 if(rs.getTimestamp(5) != null){
                 ticket.setOutTime(rs.getTimestamp(5).toLocalDateTime());
                 }
+                ticket.setRecuser(searchRecUser(vehicleRegNumber));
             }
             dataBaseConfig.closeResultSet(rs);
             dataBaseConfig.closePreparedStatement(ps);
@@ -87,5 +89,31 @@ public class TicketDAO {
             dataBaseConfig.closeConnection(con);
         }
         return false;
+    }
+
+    public boolean searchRecUser(String vehicleRegNumber){
+        try{
+            Connection con = dataBaseConfig.getConnection();
+            PreparedStatement ps = con.prepareStatement(DBConstants.SEARCH_USER);
+            ps.setString(1, vehicleRegNumber);
+            ResultSet rs = ps.executeQuery();
+            int number = 0;
+            while(rs.next())
+            {
+                number++;
+            }
+            if (number>Fare.ENTRANCES_BEFORE_DISCOUNT)
+            {
+                return true;
+            }else{
+                return false;
+            }
+            
+        }catch(Exception ex){
+            logger.error("Error searching recurrent user", ex);
+            return false;
+           
+        }
+
     }
 }
