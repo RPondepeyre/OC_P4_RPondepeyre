@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.TimeUnit;
@@ -76,7 +77,7 @@ public class ParkingDataBaseIT {
 
         testParkingACar();
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        TimeUnit.SECONDS.sleep(1);
+        TimeUnit.MILLISECONDS.sleep(500);
         parkingService.processExitingVehicle();
             try{
                 Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
@@ -90,5 +91,22 @@ public class ParkingDataBaseIT {
         
         //TODO: check that the fare generated and out time are populated correctly in the database
     }
+    @Test
+    public void testParkingrecUser(){
+        try{
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+            Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+            assertEquals(ticket.getRecuser(), false);
+        parkingService.processExitingVehicle();
+        parkingService.processIncomingVehicle();
+            ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+            assertEquals(ticket.getRecuser(), true);
+        parkingService.processExitingVehicle();
+        }catch( Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 }
