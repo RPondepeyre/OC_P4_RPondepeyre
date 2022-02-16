@@ -38,6 +38,9 @@ public class FareCalculatorService {
             }
             default: throw new IllegalArgumentException("Unkown Parking Type");
         }
+        if (ticket.getRecuser()) {
+            price = price - ((price * 5) / 100);
+        }
         ticket.setPrice(price);
     }
 }
