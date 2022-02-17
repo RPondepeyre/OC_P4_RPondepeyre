@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.concurrent.TimeUnit;
@@ -113,8 +114,28 @@ public class ParkingDataBaseIT {
         try{
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
+        int id1 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
         parkingService.processIncomingVehicle();
-        assertEquals(false, ticketDAO.searchRecUser(inputReaderUtil.readVehicleRegistrationNumber()));
+        int id2 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
+        assertEquals(id1, id2);
+        }catch( Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void TestRecUserComingbackTwoTimes(){
+        try{
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        parkingService.processExitingVehicle();
+        int id1 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
+        parkingService.processIncomingVehicle();
+        int id2 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
+        parkingService.processIncomingVehicle();
+        int id3 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
+        assertEquals(id2, id3);
+        assertNotEquals(id1, id3);
         }catch( Exception e){
             e.printStackTrace();
         }
