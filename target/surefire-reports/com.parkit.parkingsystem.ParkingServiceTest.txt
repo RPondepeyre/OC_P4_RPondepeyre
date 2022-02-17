@@ -1,17 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: com.parkit.parkingsystem.ParkingServiceTest
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.913 s <<< FAILURE! - in com.parkit.parkingsystem.ParkingServiceTest
-processIncomingSameCarTwiceTest  Time elapsed: 0.014 s  <<< FAILURE!
-org.mockito.exceptions.verification.TooManyActualInvocations: 
-
-ticketDAO.saveTicket(<any>);
-Wanted 1 time:
--> at com.parkit.parkingsystem.ParkingServiceTest.processIncomingSameCarTwiceTest(ParkingServiceTest.java:67)
-But was 2 times:
--> at com.parkit.parkingsystem.service.ParkingService.processIncomingVehicle(ParkingService.java:47)
--> at com.parkit.parkingsystem.service.ParkingService.processIncomingVehicle(ParkingService.java:47)
-
-
-	at com.parkit.parkingsystem.ParkingServiceTest.processIncomingSameCarTwiceTest(ParkingServiceTest.java:67)
-
+Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.898 s - in com.parkit.parkingsystem.ParkingServiceTest
