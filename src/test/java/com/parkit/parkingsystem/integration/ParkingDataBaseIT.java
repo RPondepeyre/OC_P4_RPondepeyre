@@ -97,16 +97,29 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
             Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
-            assertEquals(ticket.getRecuser(), false);
+            assertEquals(false, ticket.getRecuser());
         parkingService.processExitingVehicle();
         parkingService.processIncomingVehicle();
             ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
-            assertEquals(ticket.getRecuser(), true);
+            assertEquals(true, ticket.getRecuser());
         parkingService.processExitingVehicle();
         }catch( Exception e){
             e.printStackTrace();
         }
     }
+    
+    @Test
+    public void testParkingtwice(){
+        try{
+        ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+        parkingService.processIncomingVehicle();
+        parkingService.processIncomingVehicle();
+        assertEquals(false, ticketDAO.searchRecUser(inputReaderUtil.readVehicleRegistrationNumber()));
+        }catch( Exception e){
+            e.printStackTrace();
+        }
+    }
+
 
 
 }
