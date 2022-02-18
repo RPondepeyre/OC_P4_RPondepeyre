@@ -98,6 +98,7 @@ public class ParkingDataBaseIT {
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
             Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+            TimeUnit.MILLISECONDS.sleep(500);
             assertEquals(false, ticket.getRecuser());
         parkingService.processExitingVehicle();
         parkingService.processIncomingVehicle();
@@ -128,6 +129,7 @@ public class ParkingDataBaseIT {
         try{
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
+        TimeUnit.MILLISECONDS.sleep(500);
         parkingService.processExitingVehicle();
         int id1 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
         parkingService.processIncomingVehicle();

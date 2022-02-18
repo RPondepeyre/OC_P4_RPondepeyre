@@ -54,7 +54,7 @@ public class ParkingService {
                 System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
                 System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
             }else{
-                System.out.println("Cannot Process. Your vehicle is already in here.");
+                System.out.println("Cannot Process. Your vehicle is already parked in parking spot number "+parkingSpot.getId());
             }
             }
         }catch(Exception e){
