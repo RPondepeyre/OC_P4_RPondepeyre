@@ -58,10 +58,12 @@ public class Ticket {
     public void setOutTime(LocalDateTime outTime) {
         this.outTime = outTime;
     }
-    public void setRecuser (boolean recUser){
+
+    public void setRecuser(boolean recUser) {
         this.recUser = recUser;
     }
-    public boolean getRecuser(){
+
+    public boolean getRecuser() {
         return recUser;
     }
 }

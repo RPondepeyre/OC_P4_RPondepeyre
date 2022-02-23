@@ -33,12 +33,12 @@ import java.sql.Timestamp;
 <span class="fc" id="L33">            ps.setTimestamp(4, Timestamp.valueOf(ticket.getInTime()));</span>
 <span class="fc bfc" id="L34" title="All 2 branches covered.">            ps.setTimestamp(5, (ticket.getOutTime() == null)?null: (Timestamp.valueOf(ticket.getOutTime())) );</span>
 <span class="fc" id="L35">            return ps.execute();</span>
-<span class="nc" id="L36">        }catch (Exception ex){</span>
-<span class="nc" id="L37">            logger.error(&quot;Error fetching next available slot&quot;,ex);</span>
+<span class="fc" id="L36">        }catch (Exception ex){</span>
+<span class="fc" id="L37">            logger.error(&quot;Error fetching next available slot&quot;,ex);</span>
         }finally {
 <span class="fc" id="L39">            dataBaseConfig.closeConnection(con);</span>
         }
-<span class="nc" id="L41">        return false; </span>
+<span class="fc" id="L41">        return false; </span>
     }
 
     public Ticket getTicket(String vehicleRegNumber) {
@@ -63,7 +63,7 @@ import java.sql.Timestamp;
             }
 <span class="fc" id="L64">            dataBaseConfig.closeResultSet(rs);</span>
 <span class="fc" id="L65">            dataBaseConfig.closePreparedStatement(ps);</span>
-<span class="pc" id="L66">        }catch (Exception ex){</span>
+<span class="nc" id="L66">        }catch (Exception ex){</span>
 <span class="nc" id="L67">            logger.error(&quot;Error fetching next available slot&quot;,ex);</span>
         }finally {
 <span class="fc" id="L69">            dataBaseConfig.closeConnection(con);</span>

@@ -23,7 +23,7 @@ import com.parkit.parkingsystem.model.Ticket;
             case CAR: {
 <span class="fc bfc" id="L24" title="All 2 branches covered.">                if (duration &lt;= freeTime){ </span>
 <span class="fc" id="L25">                    price = 0;</span>
-<span class="fc" id="L26">                }else{</span>
+                }else{
 <span class="fc" id="L27">                price = (duration * Fare.CAR_RATE_PER_HOUR);</span>
                 }
 <span class="fc" id="L29">                break;</span>
@@ -31,7 +31,7 @@ import com.parkit.parkingsystem.model.Ticket;
             case BIKE: {
 <span class="fc bfc" id="L32" title="All 2 branches covered.">                if (duration &lt;= freeTime){ </span>
 <span class="fc" id="L33">                price = 0;</span>
-<span class="fc" id="L34">                }else{</span>
+                }else{
 <span class="fc" id="L35">                price = (duration * Fare.BIKE_RATE_PER_HOUR);</span>
                 }
 <span class="fc" id="L37">                break;</span>

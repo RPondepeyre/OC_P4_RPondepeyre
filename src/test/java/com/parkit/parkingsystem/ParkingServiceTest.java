@@ -14,13 +14,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,7 +29,6 @@ public class ParkingServiceTest {
     private static ParkingSpotDAO parkingSpotDAO;
     @Mock
     private static TicketDAO ticketDAO;
-
 
     @BeforeEach
     private void setUpPerTest() {
@@ -195,8 +189,6 @@ public class ParkingServiceTest {
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             parkingService.processIncomingVehicle();
-            
-            
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -204,7 +196,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void processincomingreUserTest(){
+    public void processincomingreUserTest() {
         try {
 
             when(inputReaderUtil.readSelection()).thenReturn(1);
@@ -213,14 +205,14 @@ public class ParkingServiceTest {
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             parkingService.processIncomingVehicle();
-            //TODO ASSERT SYSTEM OUT
+            // TODO ASSERT SYSTEM OUT
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        
     }
+
     @Test
     public void ProcessIncomingElse() {
         try {
@@ -229,7 +221,7 @@ public class ParkingServiceTest {
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             parkingService.processIncomingVehicle();
-            
+
             verify(ticketDAO, Mockito.times(0)).saveTicket(any());
 
         } catch (Exception e) {
@@ -238,7 +230,7 @@ public class ParkingServiceTest {
     }
 
     @Test
-    public void ProcessExitingticketError(){
+    public void ProcessExitingticketError() {
 
         try {
             when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
@@ -260,5 +252,5 @@ public class ParkingServiceTest {
         parkingService.processExitingVehicle();
         verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
     }
-    
+
 }
