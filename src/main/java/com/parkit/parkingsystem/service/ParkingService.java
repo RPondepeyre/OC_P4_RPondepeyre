@@ -108,6 +108,7 @@ public class ParkingService {
     public void processExitingVehicle() {
         try{
             String vehicleRegNumber = getVehichleRegNumber();
+            if(!isOut(vehicleRegNumber)){
             Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
             LocalDateTime outTime = LocalDateTime.now();
             ticket.setOutTime(outTime);
@@ -121,6 +122,9 @@ public class ParkingService {
             }else{
                 System.out.println("Unable to update ticket information. Error occurred");
             }
+        }else{
+            System.out.println("Your car is not in the parking");
+        }
         }catch(Exception e){
             logger.error("Unable to process exiting vehicle",e);
         }

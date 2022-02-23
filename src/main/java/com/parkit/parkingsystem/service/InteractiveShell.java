@@ -10,6 +10,8 @@ public class InteractiveShell {
 
     private static final Logger logger = LogManager.getLogger("InteractiveShell");
 
+    //TODO Refactoring ?
+
     public static void loadInterface(){
         logger.info("App initialized!!!");
         System.out.println("Welcome to Parking System!");

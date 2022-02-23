@@ -1,5 +1,8 @@
 package com.parkit.parkingsystem.integration;
 
+import com.parkit.parkingsystem.ParkingSpotDAOTest;
+import com.parkit.parkingsystem.constants.Fare;
+import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
 import com.parkit.parkingsystem.integration.config.DataBaseTestConfig;
@@ -8,6 +11,8 @@ import com.parkit.parkingsystem.model.ParkingSpot;
 import com.parkit.parkingsystem.model.Ticket;
 import com.parkit.parkingsystem.service.ParkingService;
 import com.parkit.parkingsystem.util.InputReaderUtil;
+
+import org.apache.commons.lang.ObjectUtils.Null;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,11 +21,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import junit.framework.AssertionFailedError;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 @ExtendWith(MockitoExtension.class)
 public class ParkingDataBaseIT {
@@ -44,8 +55,7 @@ public class ParkingDataBaseIT {
 
     @BeforeEach
     private void setUpPerTest() throws Exception {
-        when(inputReaderUtil.readSelection()).thenReturn(1);
-        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
         dataBasePrepareService.clearDataBaseEntries();
     }
 
@@ -57,9 +67,17 @@ public class ParkingDataBaseIT {
     @Test
     public void testParkingACar(){
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+        try {
+            when(inputReaderUtil.readSelection()).thenReturn(1);
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        
         parkingService.processIncomingVehicle();
         try{
-            
+
            Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
             assert(ticket !=null);
             if(ticket !=null){
@@ -75,15 +93,28 @@ public class ParkingDataBaseIT {
 
     @Test
     public void testParkingLotExit() throws InterruptedException{
-
-        testParkingACar();
+        ParkingSpot ps = new ParkingSpot(1, ParkingType.CAR, true);
+        Ticket ticket = new Ticket();
+        ticket.setId(1);
+        ticket.setInTime(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS).minusHours(1));
+        ticket.setParkingSpot(ps);
+        try {
+            ticket.setVehicleRegNumber(inputReaderUtil.readVehicleRegistrationNumber());
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        ticketDAO.saveTicket(ticket);
+        try {
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-        TimeUnit.MILLISECONDS.sleep(500);
         parkingService.processExitingVehicle();
             try{
-                Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
-                assert(ticket.getOutTime() != null);
-                // TODO assert price
+                Ticket ticketout = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+                assert(ticketout.getOutTime() != null);
+                assertEquals(Fare.CAR_RATE_PER_HOUR, ticketout.getPrice());
 
             }
             catch(Exception e){
@@ -95,6 +126,9 @@ public class ParkingDataBaseIT {
     @Test
     public void testParkingrecUser(){
         try{
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
             Ticket ticket = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
@@ -113,6 +147,8 @@ public class ParkingDataBaseIT {
     @Test
     public void testParkingtwice(){
         try{
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         int id1 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()).getId();
@@ -127,6 +163,8 @@ public class ParkingDataBaseIT {
     @Test
     public void TestRecUserComingbackTwoTimes(){
         try{
+        when(inputReaderUtil.readSelection()).thenReturn(1);
+        when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
         ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
         parkingService.processIncomingVehicle();
         TimeUnit.MILLISECONDS.sleep(500);
@@ -141,6 +179,62 @@ public class ParkingDataBaseIT {
         }catch( Exception e){
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void TestexitingvehicleOutside(){
+        try{
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            parkingService.processExitingVehicle();
+            assertEquals(null, ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber()));
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void TestInOutthenReexitVehicle(){
+        try{
+            when(inputReaderUtil.readSelection()).thenReturn(1);
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("ABCDEF");
+            ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            parkingService.processIncomingVehicle();
+            TimeUnit.MILLISECONDS.sleep(500);
+            parkingService.processExitingVehicle();
+            Ticket t1 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+
+            parkingService.processExitingVehicle();
+            Ticket t2 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
+
+            assertEquals(t1.getOutTime(), t2.getOutTime());
+            
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    @Test
+    public void FullParkingIncoming(){
+        try{
+            when(inputReaderUtil.readSelection()).thenReturn(2);
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("A");
+            ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            parkingService.processIncomingVehicle();
+            when(inputReaderUtil.readSelection()).thenReturn(2);
+            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("B");
+            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            parkingService.processIncomingVehicle();
+            when(inputReaderUtil.readSelection()).thenReturn(2);
+            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+            parkingService.processIncomingVehicle();
+
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
     }
 
 
