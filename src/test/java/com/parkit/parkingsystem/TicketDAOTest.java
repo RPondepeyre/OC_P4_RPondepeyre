@@ -1,7 +1,10 @@
 package com.parkit.parkingsystem;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.when;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
@@ -82,5 +85,68 @@ public class TicketDAOTest {
         assertEquals(enterticket.getOutTime(), exitticket.getOutTime());
         assertEquals(enterticket.getPrice(), exitticket.getPrice());
 
+    }
+
+    @Test
+    public void SaveTicketwithOutTimeTest() {
+
+        ParkingSpot ps = new ParkingSpot(1, ParkingType.CAR, false);
+        LocalDateTime intime = LocalDateTime.now().minusHours(1).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime outTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        enterticket.setId(1);
+        enterticket.setInTime(intime);
+        enterticket.setOutTime(outTime);
+        enterticket.setParkingSpot(ps);
+        enterticket.setVehicleRegNumber("ABCDE");
+
+        ticketDAO.saveTicket(enterticket);
+
+        Ticket exitticket = ticketDAO.getTicket("ABCDE");
+
+        assertEquals(enterticket.getOutTime(), exitticket.getOutTime());
+
+    }
+
+    @Test
+    public void GetTicketdontexist() {
+
+        Ticket ticket = ticketDAO.getTicket("TICKET");
+        assertEquals(null, ticket);
+
+    }
+
+    @Test
+    public void searchRecUsertrue() {
+
+        ParkingSpot ps = new ParkingSpot(1, ParkingType.CAR, false);
+        LocalDateTime intime = LocalDateTime.now().minusHours(1).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime outTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        enterticket.setId(1);
+        enterticket.setInTime(intime);
+        enterticket.setOutTime(outTime);
+        enterticket.setParkingSpot(ps);
+        enterticket.setVehicleRegNumber("ABCDE");
+
+        ticketDAO.saveTicket(enterticket);
+        ticketDAO.saveTicket(enterticket);
+
+        assertEquals(true, ticketDAO.searchRecUser("ABCDE"));
+
+    }
+
+    @Test
+    public void searchRecUserfalse() {
+
+        ParkingSpot ps = new ParkingSpot(1, ParkingType.CAR, false);
+        LocalDateTime intime = LocalDateTime.now().minusHours(1).truncatedTo(ChronoUnit.SECONDS);
+        LocalDateTime outTime = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+        enterticket.setId(1);
+        enterticket.setInTime(intime);
+        enterticket.setOutTime(outTime);
+        enterticket.setParkingSpot(ps);
+        enterticket.setVehicleRegNumber("ABCDE");
+
+        ticketDAO.saveTicket(enterticket);
+        assertEquals(false, ticketDAO.searchRecUser("ABCDE"));
     }
 }

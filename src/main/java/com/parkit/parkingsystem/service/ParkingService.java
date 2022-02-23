@@ -19,46 +19,48 @@ public class ParkingService {
 
     private InputReaderUtil inputReaderUtil;
     private ParkingSpotDAO parkingSpotDAO;
-    private  TicketDAO ticketDAO;
+    private TicketDAO ticketDAO;
 
-    public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO){
+    public ParkingService(InputReaderUtil inputReaderUtil, ParkingSpotDAO parkingSpotDAO, TicketDAO ticketDAO) {
         this.inputReaderUtil = inputReaderUtil;
         this.parkingSpotDAO = parkingSpotDAO;
         this.ticketDAO = ticketDAO;
     }
 
     public void processIncomingVehicle() {
-        try{
+        try {
             ParkingSpot parkingSpot = getNextParkingNumberIfAvailable();
-            if(parkingSpot !=null && parkingSpot.getId() > 0){
+            if (parkingSpot != null && parkingSpot.getId() > 0) {
                 String vehicleRegNumber = getVehichleRegNumber();
-                    if(isOut(vehicleRegNumber)){
-                parkingSpot.setAvailable(false);
-                parkingSpotDAO.updateParking(parkingSpot);//allot this parking space and mark it's availability as false
+                if (isOut(vehicleRegNumber)) {
+                    parkingSpot.setAvailable(false);
+                    parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
+                                                              // false
 
-                LocalDateTime inTime = LocalDateTime.now();
-                Ticket ticket = new Ticket();
-                //ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
-                //ticket.setId(ticketID);
-                ticket.setParkingSpot(parkingSpot);
-                ticket.setVehicleRegNumber(vehicleRegNumber);
-                ticket.setPrice(0);
-                ticket.setInTime(inTime);
-                ticket.setOutTime(null);
-                ticketDAO.saveTicket(ticket);
-                if (ticketDAO.searchRecUser(vehicleRegNumber))
-                {
-                    System.out.println("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+                    LocalDateTime inTime = LocalDateTime.now();
+                    Ticket ticket = new Ticket();
+                    // ID, PARKING_NUMBER, VEHICLE_REG_NUMBER, PRICE, IN_TIME, OUT_TIME)
+                    // ticket.setId(ticketID);
+                    ticket.setParkingSpot(parkingSpot);
+                    ticket.setVehicleRegNumber(vehicleRegNumber);
+                    ticket.setPrice(0);
+                    ticket.setInTime(inTime);
+                    ticket.setOutTime(null);
+                    ticketDAO.saveTicket(ticket);
+                    if (ticketDAO.searchRecUser(vehicleRegNumber)) {
+                        System.out.println(
+                                "Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount.");
+                    }
+                    System.out.println("Generated Ticket and saved in DB");
+                    System.out.println("Please park your vehicle in spot number:" + parkingSpot.getId());
+                    System.out.println("Recorded in-time for vehicle number:" + vehicleRegNumber + " is:" + inTime);
+                } else {
+                    System.out.println("Cannot Process. Your vehicle is already parked in parking spot number "
+                            + parkingSpot.getId());
                 }
-                System.out.println("Generated Ticket and saved in DB");
-                System.out.println("Please park your vehicle in spot number:"+parkingSpot.getId());
-                System.out.println("Recorded in-time for vehicle number:"+vehicleRegNumber+" is:"+inTime);
-            }else{
-                System.out.println("Cannot Process. Your vehicle is already parked in parking spot number "+parkingSpot.getId());
             }
-            }
-        }catch(Exception e){
-            logger.error("Unable to process incoming vehicle",e);
+        } catch (Exception e) {
+            logger.error("Unable to process incoming vehicle", e);
         }
     }
 
@@ -67,31 +69,31 @@ public class ParkingService {
         return inputReaderUtil.readVehicleRegistrationNumber();
     }
 
-    public ParkingSpot getNextParkingNumberIfAvailable(){
-        int parkingNumber=0;
+    public ParkingSpot getNextParkingNumberIfAvailable() {
+        int parkingNumber = 0;
         ParkingSpot parkingSpot = null;
-        try{
+        try {
             ParkingType parkingType = getVehichleType();
             parkingNumber = parkingSpotDAO.getNextAvailableSlot(parkingType);
-            if(parkingNumber > 0){
-                parkingSpot = new ParkingSpot(parkingNumber,parkingType, true);
-            }else{
+            if (parkingNumber > 0) {
+                parkingSpot = new ParkingSpot(parkingNumber, parkingType, true);
+            } else {
                 throw new Exception("Error fetching parking number from DB. Parking slots might be full");
             }
-        }catch(IllegalArgumentException ie){
+        } catch (IllegalArgumentException ie) {
             logger.error("Error parsing user input for type of vehicle", ie);
-        }catch(Exception e){
+        } catch (Exception e) {
             logger.error("Error fetching next available parking slot", e);
         }
         return parkingSpot;
     }
 
-    private ParkingType getVehichleType(){
+    private ParkingType getVehichleType() {
         System.out.println("Please select vehicle type from menu");
         System.out.println("1 CAR");
         System.out.println("2 BIKE");
         int input = inputReaderUtil.readSelection();
-        switch(input){
+        switch (input) {
             case 1: {
                 return ParkingType.CAR;
             }
@@ -106,39 +108,39 @@ public class ParkingService {
     }
 
     public void processExitingVehicle() {
-        try{
+        try {
             String vehicleRegNumber = getVehichleRegNumber();
-            if(!isOut(vehicleRegNumber)){
-            Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-            LocalDateTime outTime = LocalDateTime.now();
-            ticket.setOutTime(outTime);
-            fareCalculatorService.calculateFare(ticket);
-            if(ticketDAO.updateTicket(ticket)) {
-                ParkingSpot parkingSpot = ticket.getParkingSpot();
-                parkingSpot.setAvailable(true);
-                parkingSpotDAO.updateParking(parkingSpot);
-                System.out.println("Please pay the parking fare:" + ticket.getPrice());
-                System.out.println("Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
-            }else{
-                System.out.println("Unable to update ticket information. Error occurred");
+            if (!isOut(vehicleRegNumber)) {
+                Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
+                LocalDateTime outTime = LocalDateTime.now();
+                ticket.setOutTime(outTime);
+                fareCalculatorService.calculateFare(ticket);
+                if (ticketDAO.updateTicket(ticket)) {
+                    ParkingSpot parkingSpot = ticket.getParkingSpot();
+                    parkingSpot.setAvailable(true);
+                    parkingSpotDAO.updateParking(parkingSpot);
+                    System.out.println("Please pay the parking fare:" + ticket.getPrice());
+                    System.out.println(
+                            "Recorded out-time for vehicle number:" + ticket.getVehicleRegNumber() + " is:" + outTime);
+                } else {
+                    System.out.println("Unable to update ticket information. Error occurred");
+                }
+            } else {
+                System.out.println("Your car is not in the parking");
             }
-        }else{
-            System.out.println("Your car is not in the parking");
-        }
-        }catch(Exception e){
-            logger.error("Unable to process exiting vehicle",e);
+        } catch (Exception e) {
+            logger.error("Unable to process exiting vehicle", e);
         }
     }
 
-    public boolean isOut(String vehicleRegNumber){
+    public boolean isOut(String vehicleRegNumber) {
         boolean isout = true;
         Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);
-            if (ticket != null)
-                {
-                if(ticket.getOutTime() == null){
-                    isout = false;
-                }
-                }
+        if (ticket != null) {
+            if (ticket.getOutTime() == null) {
+                isout = false;
+            }
+        }
         return isout;
     }
 }
