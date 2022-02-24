@@ -16,12 +16,10 @@ public class FareCalculatorService {
         double duration = durationinSeconds / (60 * 60);
         double price;
 
-        // Free Time ( in Hours )
-        double freeTime = 0.5;
 
         switch (ticket.getParkingSpot().getParkingType()) {
             case CAR: {
-                if (duration <= freeTime) {
+                if (duration <= Fare.FREE_TIME_INHOUR_CAR) {
                     price = 0;
                 } else {
                     price = (duration * Fare.CAR_RATE_PER_HOUR);
@@ -29,7 +27,7 @@ public class FareCalculatorService {
                 break;
             }
             case BIKE: {
-                if (duration <= freeTime) {
+                if (duration <= Fare.FREE_TIME_INHOUR_BIKE) {
                     price = 0;
                 } else {
                     price = (duration * Fare.BIKE_RATE_PER_HOUR);

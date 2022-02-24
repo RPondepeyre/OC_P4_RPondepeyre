@@ -190,6 +190,7 @@ public class ParkingServiceTest {
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             parkingService.processIncomingVehicle();
 
+            verify(parkingSpotDAO, Mockito.times(0)).updateParking(any());
         } catch (Exception e) {
             e.printStackTrace();
         }

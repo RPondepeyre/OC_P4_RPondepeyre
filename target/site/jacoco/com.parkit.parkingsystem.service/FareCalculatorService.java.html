@@ -7,41 +7,40 @@ import com.parkit.parkingsystem.model.Ticket;
 
 <span class="fc" id="L8">public class FareCalculatorService {</span>
 
-    public void calculateFare(Ticket ticket){
-<span class="pc bpc" id="L11" title="1 of 4 branches missed.">        if( (ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime())) ){</span>
-<span class="fc" id="L12">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot;+ticket.getOutTime().toString());</span>
+    public void calculateFare(Ticket ticket) {
+<span class="pc bpc" id="L11" title="1 of 4 branches missed.">        if ((ticket.getOutTime() == null) || (ticket.getOutTime().isBefore(ticket.getInTime()))) {</span>
+<span class="fc" id="L12">            throw new IllegalArgumentException(&quot;Out time provided is incorrect:&quot; + ticket.getOutTime().toString());</span>
         }
 
 <span class="fc" id="L15">        double durationinSeconds = ChronoUnit.SECONDS.between(ticket.getInTime(), ticket.getOutTime());</span>
-<span class="fc" id="L16">        double duration = durationinSeconds/(60*60);</span>
+<span class="fc" id="L16">        double duration = durationinSeconds / (60 * 60);</span>
         double price;
 
-        // Free Time ( in Hours )
-<span class="fc" id="L20">        double freeTime = 0.5;</span>
 
-<span class="pc bpc" id="L22" title="1 of 3 branches missed.">        switch (ticket.getParkingSpot().getParkingType()){</span>
+<span class="pc bpc" id="L20" title="1 of 3 branches missed.">        switch (ticket.getParkingSpot().getParkingType()) {</span>
             case CAR: {
-<span class="fc bfc" id="L24" title="All 2 branches covered.">                if (duration &lt;= freeTime){ </span>
-<span class="fc" id="L25">                    price = 0;</span>
-                }else{
-<span class="fc" id="L27">                price = (duration * Fare.CAR_RATE_PER_HOUR);</span>
+<span class="fc bfc" id="L22" title="All 2 branches covered.">                if (duration &lt;= Fare.FREE_TIME_INHOUR_CAR) {</span>
+<span class="fc" id="L23">                    price = 0;</span>
+                } else {
+<span class="fc" id="L25">                    price = (duration * Fare.CAR_RATE_PER_HOUR);</span>
                 }
-<span class="fc" id="L29">                break;</span>
+<span class="fc" id="L27">                break;</span>
             }
             case BIKE: {
-<span class="fc bfc" id="L32" title="All 2 branches covered.">                if (duration &lt;= freeTime){ </span>
-<span class="fc" id="L33">                price = 0;</span>
-                }else{
-<span class="fc" id="L35">                price = (duration * Fare.BIKE_RATE_PER_HOUR);</span>
+<span class="fc bfc" id="L30" title="All 2 branches covered.">                if (duration &lt;= Fare.FREE_TIME_INHOUR_BIKE) {</span>
+<span class="fc" id="L31">                    price = 0;</span>
+                } else {
+<span class="fc" id="L33">                    price = (duration * Fare.BIKE_RATE_PER_HOUR);</span>
                 }
-<span class="fc" id="L37">                break;</span>
+<span class="fc" id="L35">                break;</span>
             }
-<span class="nc" id="L39">            default: throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
+            default:
+<span class="nc" id="L38">                throw new IllegalArgumentException(&quot;Unkown Parking Type&quot;);</span>
         }
-<span class="fc bfc" id="L41" title="All 2 branches covered.">        if (ticket.getRecuser()) {</span>
-<span class="fc" id="L42">            price = price - ((price * 5) / 100);</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (ticket.getRecuser()) {</span>
+<span class="fc" id="L41">            price = price - ((price * 5) / 100);</span>
         }
-<span class="fc" id="L44">        ticket.setPrice(price);</span>
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L43">        ticket.setPrice(price);</span>
+<span class="fc" id="L44">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

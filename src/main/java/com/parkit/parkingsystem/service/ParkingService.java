@@ -34,8 +34,7 @@ public class ParkingService {
                 String vehicleRegNumber = getVehichleRegNumber();
                 if (isOut(vehicleRegNumber)) {
                     parkingSpot.setAvailable(false);
-                    parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as
-                                                              // false
+                    parkingSpotDAO.updateParking(parkingSpot);// allot this parking space and mark it's availability as false
 
                     LocalDateTime inTime = LocalDateTime.now();
                     Ticket ticket = new Ticket();

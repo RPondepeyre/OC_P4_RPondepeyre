@@ -1,4 +1,5 @@
 package com.parkit.parkingsystem.integration;
+
 import com.parkit.parkingsystem.constants.Fare;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
@@ -80,8 +81,6 @@ public class ParkingDataBaseIT {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // TODO: check that a ticket is actualy saved in DB and Parking table is updated
-        // with availability
     }
 
     @Test
@@ -112,9 +111,6 @@ public class ParkingDataBaseIT {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        // TODO: check that the fare generated and out time are populated correctly in
-        // the database
     }
 
     @Test
@@ -203,27 +199,6 @@ public class ParkingDataBaseIT {
             Ticket t2 = ticketDAO.getTicket(inputReaderUtil.readVehicleRegistrationNumber());
 
             assertEquals(t1.getOutTime(), t2.getOutTime());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Test
-    public void FullParkingIncoming() {
-        try {
-            when(inputReaderUtil.readSelection()).thenReturn(2);
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("A");
-            ParkingService parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-            parkingService.processIncomingVehicle();
-            when(inputReaderUtil.readSelection()).thenReturn(2);
-            when(inputReaderUtil.readVehicleRegistrationNumber()).thenReturn("B");
-            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-            parkingService.processIncomingVehicle();
-            when(inputReaderUtil.readSelection()).thenReturn(2);
-            parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
-            parkingService.processIncomingVehicle();
 
         } catch (Exception e) {
             e.printStackTrace();
