@@ -3,50 +3,71 @@
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileInputStream;
 import java.sql.*;
+import java.util.Properties;
 
-<span class="fc" id="L8">public class DataBaseConfig {</span>
+<span class="fc" id="L10">public class DataBaseConfig {</span>
 
-<span class="fc" id="L10">    private static final Logger logger = LogManager.getLogger(&quot;DataBaseConfig&quot;);</span>
+<span class="fc" id="L12">    private static final Logger logger = LogManager.getLogger(&quot;DataBaseConfig&quot;);</span>
+
 
     public Connection getConnection() throws ClassNotFoundException, SQLException {
-<span class="nc" id="L13">        logger.info(&quot;Create DB connection&quot;);</span>
-<span class="nc" id="L14">        Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span>
-<span class="nc" id="L15">        return DriverManager.getConnection(</span>
-                &quot;jdbc:mysql://localhost:3306/prod?serverTimezone=UTC&quot;, &quot;root&quot;, &quot;rootroot&quot;);
-    }
+<span class="nc" id="L16">            String port = &quot;&quot;;</span>
+<span class="nc" id="L17">            String username =&quot;&quot;;</span>
+<span class="nc" id="L18">            String password = &quot;&quot;;</span>
+<span class="nc" id="L19">            String timezone = &quot;&quot;;</span>
+        
+        try{
+<span class="nc" id="L22">            Properties prop = new Properties();</span>
+<span class="nc" id="L23">            prop.load(new FileInputStream((&quot;src/main/resources/Data.properties&quot;)));</span>
+<span class="nc" id="L24">            port = prop.getProperty(&quot;port&quot;);</span>
+<span class="nc" id="L25">            username = prop.getProperty(&quot;username&quot;);</span>
+<span class="nc" id="L26">            password = prop.getProperty(&quot;password&quot;);</span>
+<span class="nc" id="L27">            timezone = prop.getProperty(&quot;timezone&quot;);</span>
+
+
+<span class="nc" id="L30">        }catch(Exception e){</span>
+<span class="nc" id="L31">            logger.error(&quot;Error while reading database properties&quot;, e);</span>
+        }finally{
+        }
+<span class="nc" id="L34">        logger.info(&quot;Create DB connection&quot;);</span>
+<span class="nc" id="L35">        Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span>
+<span class="nc" id="L36">        return DriverManager.getConnection(</span>
+<span class="nc" id="L37">                &quot;jdbc:mysql://localhost:&quot;+port+&quot;/prod?serverTimezone=&quot;+timezone, username, password);</span>
+    }//&quot;jdbc:mysql://localhost:3306/prod?serverTimezone=UTC&quot;, &quot;root&quot;, &quot;rootroot&quot;
 
     public void closeConnection(Connection con) {
-<span class="nc bnc" id="L20" title="All 2 branches missed.">        if (con != null) {</span>
+<span class="nc bnc" id="L41" title="All 2 branches missed.">        if (con != null) {</span>
             try {
-<span class="nc" id="L22">                con.close();</span>
-<span class="nc" id="L23">                logger.info(&quot;Closing DB connection&quot;);</span>
-<span class="nc" id="L24">            } catch (SQLException e) {</span>
-<span class="nc" id="L25">                logger.error(&quot;Error while closing connection&quot;, e);</span>
-<span class="nc" id="L26">            }</span>
+<span class="nc" id="L43">                con.close();</span>
+<span class="nc" id="L44">                logger.info(&quot;Closing DB connection&quot;);</span>
+<span class="nc" id="L45">            } catch (SQLException e) {</span>
+<span class="nc" id="L46">                logger.error(&quot;Error while closing connection&quot;, e);</span>
+            }
         }
-<span class="nc" id="L28">    }</span>
+<span class="nc" id="L49">    }</span>
 
     public void closePreparedStatement(PreparedStatement ps) {
-<span class="nc bnc" id="L31" title="All 2 branches missed.">        if (ps != null) {</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">        if (ps != null) {</span>
             try {
-<span class="nc" id="L33">                ps.close();</span>
-<span class="nc" id="L34">                logger.info(&quot;Closing Prepared Statement&quot;);</span>
-<span class="nc" id="L35">            } catch (SQLException e) {</span>
-<span class="nc" id="L36">                logger.error(&quot;Error while closing prepared statement&quot;, e);</span>
-<span class="nc" id="L37">            }</span>
+<span class="nc" id="L54">                ps.close();</span>
+<span class="nc" id="L55">                logger.info(&quot;Closing Prepared Statement&quot;);</span>
+<span class="nc" id="L56">            } catch (SQLException e) {</span>
+<span class="nc" id="L57">                logger.error(&quot;Error while closing prepared statement&quot;, e);</span>
+            }
         }
-<span class="nc" id="L39">    }</span>
+<span class="nc" id="L60">    }</span>
 
     public void closeResultSet(ResultSet rs) {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (rs != null) {</span>
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (rs != null) {</span>
             try {
-<span class="nc" id="L44">                rs.close();</span>
-<span class="nc" id="L45">                logger.info(&quot;Closing Result Set&quot;);</span>
-<span class="nc" id="L46">            } catch (SQLException e) {</span>
-<span class="nc" id="L47">                logger.error(&quot;Error while closing result set&quot;, e);</span>
-<span class="nc" id="L48">            }</span>
+<span class="nc" id="L65">                rs.close();</span>
+<span class="nc" id="L66">                logger.info(&quot;Closing Result Set&quot;);</span>
+<span class="nc" id="L67">            } catch (SQLException e) {</span>
+<span class="nc" id="L68">                logger.error(&quot;Error while closing result set&quot;, e);</span>
+            }
         }
-<span class="nc" id="L50">    }</span>
+<span class="nc" id="L71">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.5.201910111838</span></div></body></html>

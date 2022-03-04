@@ -3,18 +3,39 @@ package com.parkit.parkingsystem.config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.FileInputStream;
 import java.sql.*;
+import java.util.Properties;
 
 public class DataBaseConfig {
 
     private static final Logger logger = LogManager.getLogger("DataBaseConfig");
 
+
     public Connection getConnection() throws ClassNotFoundException, SQLException {
+            String port = "";
+            String username ="";
+            String password = "";
+            String timezone = "";
+        
+        try{
+            Properties prop = new Properties();
+            prop.load(new FileInputStream(("src/main/resources/Data.properties")));
+            port = prop.getProperty("port");
+            username = prop.getProperty("username");
+            password = prop.getProperty("password");
+            timezone = prop.getProperty("timezone");
+
+
+
+        }catch(Exception e){
+            logger.error("Error while reading database properties", e);
+        }
         logger.info("Create DB connection");
         Class.forName("com.mysql.cj.jdbc.Driver");
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/prod?serverTimezone=UTC", "root", "rootroot");
-    }
+                "jdbc:mysql://localhost:"+port+"/prod?serverTimezone="+timezone, username, password);
+    }//"jdbc:mysql://localhost:3306/prod?serverTimezone=UTC", "root", "rootroot"
 
     public void closeConnection(Connection con) {
         if (con != null) {

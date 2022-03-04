@@ -20,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -80,6 +81,7 @@ public class ParkingDataBaseIT {
 
         } catch (Exception e) {
             e.printStackTrace();
+            fail("error");
         }
     }
 

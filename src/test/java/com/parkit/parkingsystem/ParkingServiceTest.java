@@ -13,9 +13,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.internal.matchers.Contains;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.time.LocalDateTime;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -199,6 +205,9 @@ public class ParkingServiceTest {
     @Test
     public void processincomingreUserTest() {
         try {
+            PrintStream standardOut = System.out;
+            ByteArrayOutputStream oscaptor = new ByteArrayOutputStream();
+            System.setOut(new PrintStream(oscaptor));
 
             when(inputReaderUtil.readSelection()).thenReturn(1);
             when(parkingSpotDAO.getNextAvailableSlot(ParkingType.CAR)).thenReturn(1);
@@ -206,7 +215,11 @@ public class ParkingServiceTest {
 
             parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
             parkingService.processIncomingVehicle();
-            // TODO ASSERT SYSTEM OUT
+            
+
+            assertTrue(oscaptor.toString().contains("Welcome back! As a recurring user of our parking lot, you'll benefit from a 5% discount."));
+
+            System.setOut(standardOut);
 
         } catch (Exception e) {
             e.printStackTrace();
