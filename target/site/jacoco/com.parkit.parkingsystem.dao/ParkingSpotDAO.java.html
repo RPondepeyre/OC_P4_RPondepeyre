@@ -26,12 +26,12 @@ import java.sql.ResultSet;
 <span class="fc" id="L26">            ps = con.prepareStatement(DBConstants.GET_NEXT_PARKING_SPOT);</span>
 <span class="fc" id="L27">            ps.setString(1, parkingType.toString());</span>
 <span class="fc" id="L28">            rs = ps.executeQuery();</span>
-<span class="pc bpc" id="L29" title="1 of 2 branches missed.">            if (rs.next()) {</span>
+<span class="fc bfc" id="L29" title="All 2 branches covered.">            if (rs.next()) {</span>
 <span class="fc" id="L30">                result = rs.getInt(1);</span>
             }
 
-<span class="pc" id="L33">        } catch (Exception ex) {</span>
-<span class="nc" id="L34">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
+<span class="fc" id="L33">        } catch (Exception ex) {</span>
+<span class="fc" id="L34">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
         } finally {
 <span class="fc" id="L36">            dataBaseConfig.closeResultSet(rs);</span>
 <span class="fc" id="L37">            dataBaseConfig.closePreparedStatement(ps);</span>
@@ -51,9 +51,9 @@ import java.sql.ResultSet;
 <span class="fc" id="L51">            ps.setInt(2, parkingSpot.getId());</span>
 <span class="fc" id="L52">            int updateRowCount = ps.executeUpdate();</span>
 <span class="pc bpc" id="L53" title="1 of 2 branches missed.">            return (updateRowCount == 1);</span>
-<span class="nc" id="L54">        } catch (Exception ex) {</span>
-<span class="nc" id="L55">            logger.error(&quot;Error updating parking info&quot;, ex);</span>
-<span class="nc" id="L56">            return false;</span>
+<span class="fc" id="L54">        } catch (Exception ex) {</span>
+<span class="fc" id="L55">            logger.error(&quot;Error updating parking info&quot;, ex);</span>
+<span class="fc" id="L56">            return false;</span>
         } finally {
 <span class="fc" id="L58">            dataBaseConfig.closePreparedStatement(ps);</span>
 <span class="fc" id="L59">            dataBaseConfig.closeConnection(con);</span>

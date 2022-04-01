@@ -27,15 +27,15 @@ import java.util.Properties;
 <span class="nc" id="L27">            timezone = prop.getProperty(&quot;timezone&quot;);</span>
 
 
-<span class="nc" id="L30">        }catch(Exception e){</span>
-<span class="nc" id="L31">            logger.error(&quot;Error while reading database properties&quot;, e);</span>
-        }finally{
+
+<span class="nc" id="L31">        }catch(Exception e){</span>
+<span class="nc" id="L32">            logger.error(&quot;Error while reading database properties&quot;, e);</span>
         }
 <span class="nc" id="L34">        logger.info(&quot;Create DB connection&quot;);</span>
 <span class="nc" id="L35">        Class.forName(&quot;com.mysql.cj.jdbc.Driver&quot;);</span>
 <span class="nc" id="L36">        return DriverManager.getConnection(</span>
 <span class="nc" id="L37">                &quot;jdbc:mysql://localhost:&quot;+port+&quot;/prod?serverTimezone=&quot;+timezone, username, password);</span>
-    }//&quot;jdbc:mysql://localhost:3306/prod?serverTimezone=UTC&quot;, &quot;root&quot;, &quot;rootroot&quot;
+    }
 
     public void closeConnection(Connection con) {
 <span class="nc bnc" id="L41" title="All 2 branches missed.">        if (con != null) {</span>

@@ -135,7 +135,7 @@ public class ParkingService {
 <span class="fc" id="L135">        boolean isout = true;</span>
 <span class="fc" id="L136">        Ticket ticket = ticketDAO.getTicket(vehicleRegNumber);</span>
 <span class="fc bfc" id="L137" title="All 2 branches covered.">        if (ticket != null) {</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">            if (ticket.getOutTime() == null) {</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">            if (ticket.getOutTime() == null) {</span>
 <span class="fc" id="L139">                isout = false;</span>
             }
         }

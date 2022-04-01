@@ -1,5 +1,6 @@
 package com.parkit.parkingsystem;
 
+import com.parkit.parkingsystem.config.DataBaseConfig;
 import com.parkit.parkingsystem.constants.ParkingType;
 import com.parkit.parkingsystem.dao.ParkingSpotDAO;
 import com.parkit.parkingsystem.dao.TicketDAO;
@@ -13,14 +14,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.internal.matchers.Contains;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import nl.altindag.log.LogCaptor;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
@@ -36,8 +40,13 @@ public class ParkingServiceTest {
     @Mock
     private static TicketDAO ticketDAO;
 
+    private static LogCaptor logCaptor;
+
     @BeforeEach
     private void setUpPerTest() {
+        
+        logCaptor = LogCaptor.forName("TicketDAO");
+        logCaptor.setLogLevelToInfo();
     }
 
     @Test
@@ -153,6 +162,7 @@ public class ParkingServiceTest {
         verify(ticketDAO, Mockito.times(0)).saveTicket(any());
     }
 
+
     @Test
     public void processExitingBikeTest() {
         try {
@@ -243,6 +253,7 @@ public class ParkingServiceTest {
         }
     }
 
+
     @Test
     public void ProcessExitingticketError() {
 
@@ -267,4 +278,22 @@ public class ParkingServiceTest {
         verify(parkingSpotDAO, Mockito.times(0)).updateParking(any(ParkingSpot.class));
     }
 
+    @Test
+    public void isOutTesttrue(){
+        Ticket ticket = new Ticket();
+        ticket.setOutTime(LocalDateTime.now());
+        when(ticketDAO.getTicket("ABCDEF")).thenReturn(ticket);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+        assertTrue(parkingService.isOut("ABCDEF"));
+    }
+
+    @Test
+    public void isOutTestfalse(){
+        Ticket ticket = new Ticket();
+        when(ticketDAO.getTicket("ABCDEF")).thenReturn(ticket);
+        parkingService = new ParkingService(inputReaderUtil, parkingSpotDAO, ticketDAO);
+
+        assertFalse(parkingService.isOut("ABCDEF"));
+    }
 }

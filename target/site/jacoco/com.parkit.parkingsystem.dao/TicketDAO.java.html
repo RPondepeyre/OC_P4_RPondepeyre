@@ -33,13 +33,13 @@ import java.sql.Timestamp;
 <span class="fc" id="L33">            ps.setTimestamp(4, Timestamp.valueOf(ticket.getInTime()));</span>
 <span class="fc bfc" id="L34" title="All 2 branches covered.">            ps.setTimestamp(5, (ticket.getOutTime() == null) ? null : (Timestamp.valueOf(ticket.getOutTime())));</span>
 <span class="fc" id="L35">            return ps.execute();</span>
-<span class="nc" id="L36">        } catch (Exception ex) {</span>
-<span class="nc" id="L37">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
+<span class="fc" id="L36">        } catch (Exception ex) {</span>
+<span class="fc" id="L37">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
         } finally {
 <span class="fc" id="L39">            dataBaseConfig.closePreparedStatement(ps);</span>
 <span class="fc" id="L40">            dataBaseConfig.closeConnection(con);</span>
         }
-<span class="nc" id="L42">        return false;</span>
+<span class="fc" id="L42">        return false;</span>
     }
 
     public Ticket getTicket(String vehicleRegNumber) {
@@ -65,8 +65,8 @@ import java.sql.Timestamp;
 <span class="fc" id="L65">                ticket.setRecuser(searchRecUser(vehicleRegNumber));</span>
             }
 
-<span class="pc" id="L68">        } catch (Exception ex) {</span>
-<span class="nc" id="L69">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
+<span class="fc" id="L68">        } catch (Exception ex) {</span>
+<span class="fc" id="L69">            logger.error(&quot;Error fetching next available slot&quot;, ex);</span>
         } finally {
 <span class="fc" id="L71">            dataBaseConfig.closeResultSet(rs);</span>
 <span class="fc" id="L72">            dataBaseConfig.closePreparedStatement(ps);</span>
@@ -86,13 +86,13 @@ import java.sql.Timestamp;
 <span class="fc" id="L86">            ps.setInt(3, ticket.getId());</span>
 <span class="fc" id="L87">            ps.execute();</span>
 <span class="fc" id="L88">            return true;</span>
-<span class="nc" id="L89">        } catch (Exception ex) {</span>
-<span class="nc" id="L90">            logger.error(&quot;Error saving ticket info&quot;, ex);</span>
+<span class="fc" id="L89">        } catch (Exception ex) {</span>
+<span class="fc" id="L90">            logger.error(&quot;Error saving ticket info&quot;, ex);</span>
         } finally {
 <span class="fc" id="L92">            dataBaseConfig.closePreparedStatement(ps);</span>
 <span class="fc" id="L93">            dataBaseConfig.closeConnection(con);</span>
         }
-<span class="nc" id="L95">        return false;</span>
+<span class="fc" id="L95">        return false;</span>
     }
 
     public boolean searchRecUser(String vehicleRegNumber) {
@@ -114,9 +114,9 @@ import java.sql.Timestamp;
 <span class="fc" id="L114">                return false;</span>
             }
 
-<span class="nc" id="L117">        } catch (Exception ex) {</span>
-<span class="nc" id="L118">            logger.error(&quot;Error searching recurrent user&quot;, ex);</span>
-<span class="nc" id="L119">            return false;</span>
+<span class="fc" id="L117">        } catch (Exception ex) {</span>
+<span class="fc" id="L118">            logger.error(&quot;Error searching recurrent user&quot;, ex);</span>
+<span class="fc" id="L119">            return false;</span>
 
         } finally{
 <span class="fc" id="L122">            dataBaseConfig.closeResultSet(rs);</span>
